@@ -3,6 +3,8 @@
 
 
 def canUnlockAll(boxes):
+    if boxes[0] == [] or not isinstance(boxes, list):
+        return False
     keys = [0]
     opened = [0]
     new_key = True
