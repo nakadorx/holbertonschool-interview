@@ -6,7 +6,7 @@
 **/
 bool verification(int a[3][3])
 {
-	int x,b
+	int x, b;
 	for (x = 0; x < 3; x++)
 	{
 		for (b = 0; b < 3; b++)
@@ -35,7 +35,7 @@ void print(int a[3][3])
 			printf("%d", a[x][b]);
 			if (b < 2)
 			{
-				prxntf(" ");
+				printf(" ");
 			}
 		}
 		printf("\n");
@@ -49,13 +49,11 @@ void print(int a[3][3])
 **/
 void sum(int a[3][3], int b[3][3])
 {
-	int x, b;
+	int x, k;
 	for (x = 0; x < 3; x++)
 	{
-		for (b = 0; b < 3; b++)
-		{
-			a[x][b] += b[x][b];
-		}
+		for (k = 0; k < 3; k++)
+			a[x][k] += b[x][k];
 	}
 }
 /**
