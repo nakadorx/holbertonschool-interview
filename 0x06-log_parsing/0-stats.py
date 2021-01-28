@@ -1,34 +1,39 @@
-
+ 
 #!/usr/bin/python3
-"""holbb"""
+"""Log parsing module"""
 
 
 import sys
 
-i = 0
-lis = ['200', '301', '400', '401', '403', '404', '405', '500']
-su = 0
-new = [0, 0, 0, 0, 0, 0, 0, 0]
 
+records = {
+    "200": 0,
+    "301": 0,
+    "400": 0,
+    "401": 0,
+    "403": 0,
+    "404": 0,
+    "405": 0,
+    "500": 0
+    }
+file_size = 0
 try:
-    for line in sys.stdin:
-        s = line.split()
-        if len(s) > 2:
-            if s[-2] in lis:
-                x = lis.index(s[-2])
-                new[x] = new[x] + 1
-            i += 1
-            su = su + int(s[-1])
-        if i == 10:
-            i = 0
-            print("File size: {}".format(su))
-            for x in range(8):
-                if new[x] != 0:
-                    print('{}: {}'.format(lis[x], new[x]))
-except Exception:
+    for time, line in enumerate(sys.stdin, 1):
+        token = line.split()
+        if len(token) > 2:
+            status_code = token[len(token) - 2]
+            file_size += int(token[len(token) - 1])
+            if status_code in records:
+                records[str(status_code)] += 1
+        if time % 10 == 0:
+            print("File size: {}".format(file_size))
+            for sc in sorted(records):
+                if records[sc] > 0:
+                    print("{}: {}".format(sc, records[sc]))
+except KeyboardInterrupt:
     pass
 finally:
-    print("File size: {}".format(su))
-    for x in range(8):
-        if new[x] != 0:
-            print("{}: {}".format(lis[x], new[x]))
+    print("File size: {}".format(file_size))
+    for sc in sorted(records):
+        if records[sc] > 0:
+            print("{}: {}".format(sc, records[sc]))
