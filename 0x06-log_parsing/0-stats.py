@@ -1,39 +1,45 @@
- 
 #!/usr/bin/python3
-"""Log parsing module"""
+""" holb
+"""
+from sys import stdin
 
-
-import sys
-
-
-records = {
-    "200": 0,
-    "301": 0,
-    "400": 0,
-    "401": 0,
-    "403": 0,
-    "404": 0,
-    "405": 0,
-    "500": 0
+status_codes = {
+        "200": 0,
+        "301": 0,
+        "400": 0,
+        "401": 0,
+        "403": 0,
+        "404": 0,
+        "405": 0,
+        "500": 0
     }
 file_size = 0
-try:
-    for time, line in enumerate(sys.stdin, 1):
-        token = line.split()
-        if len(token) > 2:
-            status_code = token[len(token) - 2]
-            file_size += int(token[len(token) - 1])
-            if status_code in records:
-                records[str(status_code)] += 1
-        if time % 10 == 0:
-            print("File size: {}".format(file_size))
-            for sc in sorted(records):
-                if records[sc] > 0:
-                    print("{}: {}".format(sc, records[sc]))
-except KeyboardInterrupt:
-    pass
-finally:
-    print("File size: {}".format(file_size))
-    for sc in sorted(records):
-        if records[sc] > 0:
-            print("{}: {}".format(sc, records[sc]))
+
+
+def log_stats():
+    """holb
+    """
+    print("File size: {:d}".format(file_size))
+    for st in sorted(status_codes.keys()):
+        if status_codes[st]:
+            print("{}: {:d}".format(st, status_codes[st]))
+
+if __name__ == "__main__":
+    count = 0
+    try:
+        for line in stdin:
+            if len(line) >= 3:
+                parsed = line.split()
+                code = parsed[-2]
+                size = parsed[-1]
+                if code in status_codes:
+                    status_codes[code] += 1
+            file_size += int(size)
+            if count == 9:
+                log_stats()
+                count = -1
+            count += 1
+    except KeyboardInterrupt:
+        log_stats()
+        raise
+    log_stats()
