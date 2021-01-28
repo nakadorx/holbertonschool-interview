@@ -1,40 +1,33 @@
 #!/usr/bin/python3
-""" log parsing """
+"""holb"""
 
 
 import sys
 
-if __name__ == "__main__":
-    def printx(data, status):
-        """ print the log """
-        print("File size: {}".format(data))
-        for k, v in sorted(status.items()):
-            if v != 0:
-                print("{}: {}".format(k, v))
-    counter = 0
-    data = 0
-    status = {
-        "200": 0, "301": 0, "400": 0, "401": 0,
-        "403": 0, "404": 0, "405": 0, "500": 0}
-    try:
-        for line in sys.stdin:
-            if not(counter == 10):
-                counter = counter + 1
+cnt = 0
+dv = [0, 0, 0, 0, 0, 0, 0, 0]
+lx = ['200', '301', '400', '401', '403', '404', '405', '500']
+da = 0
 
-            else:
-                printx(data, status)
-                counter = 1
-            parsed = line.split()
-            try:
-                data = data + int(parsed[-1])
-            except Exception as e:
-                pass
-            try:
-                for k, v in status.items():
-                    if k == parsed[-2]:
-                        status[k] = status[k] + 1
-            except Exception as e:
-                pass
-        printx(data, status)
-    except KeyboardInterrupt as e:
-        printx(data, status)
+try:
+    for line in sys.stdin:
+        s = line.split()
+        if len(s) > 2:
+            if s[-2] in lx:
+                x = lx.index(s[-2])
+                dv[x] = dv[x] + 1
+            cnt += 1
+            da = da + int(s[-1])
+        if cnt == 10:
+            cnt = 0
+            print("File size: {}".format(da))
+            for x in range(8):
+                if dv[x] != 0:
+                    print('{}: {}'.format(lx[x], dv[x]))
+except Exception:
+    pass
+finally:
+    print("File size: {}".format(su))
+    for x in range(8):
+        if dv[x] != 0:
+            print("{}: {}".format(lis[x], dv[x]))
