@@ -1,38 +1,40 @@
-
 #!/usr/bin/python3
-""" holb """
+""" log parsing """
 
 
 import sys
-import re
 
-filesize = 0
-status = {}
 
-def print_status(fsize, status_codes):
-    """ holb """
-    print("File size: {}".format(filesize))
-    for key in sorted(status.keys()):
-        print("{}: {}".format(key, status[key]))
+def printx(data, status):
+    """ print the log """
+    print("File size: {}".format(data))
+    for key, value in sorted(status.items()):
+        if value != 0:
+            print("{}: {}".format(key, value))
 
+status = {
+    "200": 0, "301": 0, "400": 0, "401": 0,
+    "403": 0, "404": 0, "405": 0, "500": 0}
+counter = 0
+data = 0
 try:
-    for n, line in enumerate(sys.stdin, 1):
-        x = len(line) - 1
-        while x > 0:
-            if line[x] == '\"':
-                break
-            x -= 1
-        listd = line[x + 1:].split()
-        if len(listd) > 1:
-            filesize += int(listd[1]) if listd[1].isdigit() else 0
-            if listd[0].isdigit():
-                if listd[0] in status.keys():
-                    status[listd[0]] += 1
-                else:
-                    status[listd[0]] = 1
-            if n % 10 == 0:
-                print_status(filesize, status)
+    for line in sys.stdin:
+        if counter == 10:
+            printx(data, status)
+            counter = 1
+        else:
+            counter = counter + 1
+        parsed = line.split()
+        try:
+            data = data + int(parsed[-1])
+        except Exception as e:
+            pass
+        try:
+            for key, value in status.items():
+                if key == parsed[-2]:
+                    status[key] = status[key] + 1
+        except Exception as e:
+            pass
+    printx(data, status)
 except KeyboardInterrupt as e:
-    print_status(filesize, status)
-finally:
-    print_status(filesize, status)
+    printx(data, status)
