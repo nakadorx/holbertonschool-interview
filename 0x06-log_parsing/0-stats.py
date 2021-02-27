@@ -1,40 +1,38 @@
+
 #!/usr/bin/python3
-"""
-holb
-"""
+""" holb """
+
 
 import sys
+import re
 
-fullSize = 0
-x = 0
-STATUS = {'200': 0,
-          '301': 0,
-          '400': 0,
-          '401': 0,
-          '403': 0,
-          '404': 0,
-          '405': 0,
-          '500': 0}
+filesize = 0
+status = {}
+
+def print_status(fsize, status_codes):
+    """ holb """
+    print("File size: {}".format(filesize))
+    for key in sorted(status.keys()):
+        print("{}: {}".format(key, status[key]))
+
 try:
-    for argument in sys.stdin:
-        arg = argument.split(" ")
-        if len(arg) > 2:
-            status = arg[-2]
-            fileSize = int(arg[-1])
-            if status in STATUS:
-                STATUS[status] += 1
-            fullSize += fileSize
-            x += 1
-            if x == 10:
-                print("File size: {:d}".format(fullSize))
-                for k, validUTF8 in sorted(STATUS.items()):
-                    if validUTF8 != 0:
-                        print("{}: {:d}".format(k, validUTF8))
-                x = 0
-except KeyboardInterrupt:
-    pass
+    for n, line in enumerate(sys.stdin, 1):
+        x = len(line) - 1
+        while x > 0:
+            if line[x] == '\"':
+                break
+            x -= 1
+        listd = line[x + 1:].split()
+        if len(listd) > 1:
+            filesize += int(listd[1]) if listd[1].isdigit() else 0
+            if listd[0].isdigit():
+                if listd[0] in status.keys():
+                    status[listd[0]] += 1
+                else:
+                    status[listd[0]] = 1
+            if n % 10 == 0:
+                print_status(filesize, status)
+except KeyboardInterrupt as e:
+    print_status(filesize, status)
 finally:
-    print("File size: {:d}".format(fullSize))
-    for k, v in sorted(STATUS.items()):
-        if v != 0:
-            print("{}: {:d}".format(k, v))
+    print_status(filesize, status)
