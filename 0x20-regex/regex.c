@@ -16,13 +16,17 @@ int regex_match(char const *str, char const *pattern)
 	x = *str && (*str == *pattern || *pattern == '.');
 	y = *(pattern + 1) == '*';
 
-	if (!*str && !y)
+	if (!*str && !y) {
 		return (*pattern ? 0 : 1);
-	else if (x && y)
+	}
+	else if (x && y) {
 		return (regex_match(str + 1, pattern) || regex_match(str, pattern + 2));
-	else if (x && !y)
+	}
+	else if (x && !y) {
 		return (regex_match(str + 1, pattern + 1));
-	else if (y)
+	}
+	else if (y) {
 		return (regex_match(str, pattern + 2));
+	}
 	return(0);
 }
