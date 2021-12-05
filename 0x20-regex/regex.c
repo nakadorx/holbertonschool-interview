@@ -7,22 +7,22 @@
 */
 int regex_match(char const *str, char const *pattern)
 {
-	int a = 0;
+	int x = 0;
 	int y = 0;
 
 	if (!str || !pattern)
 		return (0);
 
-	a = *str && (*str == *pattern || *pattern == '.');
-	b = *(pattern + 1) == '*';
+	x = *str && (*str == *pattern || *pattern == '.');
+	y = *(pattern + 1) == '*';
 
-	if (!*str && !b)
+	if (!*str && !y)
 		return (*pattern ? 0 : 1);
-	else if (a && b)
+	else if (x && y)
 		return (regex_match(str + 1, pattern) || regex_match(str, pattern + 2));
-	else if (a && !b)
+	else if (x && !y)
 		return (regex_match(str + 1, pattern + 1));
-	else if (b)
+	else if (y)
 		return (regex_match(str, pattern + 2));
 	return(0);
 }
